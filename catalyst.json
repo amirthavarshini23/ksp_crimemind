@@ -1,0 +1,22 @@
+{
+  "project": {
+    "name": "CrimeMindAI",
+    "id": "crimemind-ai-ksp"
+  },
+  "hosting": {
+    "targets": [
+      {
+        "name": "client",
+        "directory": "app"
+      }
+    ]
+  },
+  "functions": {
+    "targets": [
+      {
+        "name": "crimemind_backend",
+        "directory": "functions/crimemind_backend"
+      }
+    ]
+  }
+}

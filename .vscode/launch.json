@@ -1,0 +1,31 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "🐍 FastAPI Backend (Debug)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": [
+        "main:app",
+        "--reload",
+        "--port",
+        "8000"
+      ],
+      "cwd": "${workspaceFolder}/functions/crimemind_backend",
+      "env": {
+        "GEMINI_API_KEY": "${env:GEMINI_API_KEY}"
+      },
+      "console": "integratedTerminal",
+      "justMyCode": true
+    }
+  ],
+  "compounds": [
+    {
+      "name": "🎯 Full App (Frontend + Backend)",
+      "configurations": ["🐍 FastAPI Backend (Debug)"],
+      "preLaunchTask": "🚀 Start Frontend (React)",
+      "stopAll": true
+    }
+  ]
+}

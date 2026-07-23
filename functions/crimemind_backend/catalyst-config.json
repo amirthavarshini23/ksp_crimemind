@@ -1,0 +1,6 @@
+{
+  "name": "crimemind_backend",
+  "type": "advanced",
+  "runtime": "python3.9",
+  "entry": "main.py"
+}

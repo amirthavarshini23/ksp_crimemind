@@ -1,0 +1,35 @@
+{
+  "folders": [
+    {
+      "name": "CrimeMind AI (Root)",
+      "path": "."
+    },
+    {
+      "name": "Frontend (React + Vite)",
+      "path": "./app"
+    },
+    {
+      "name": "Backend (FastAPI)",
+      "path": "./functions/crimemind_backend"
+    }
+  ],
+  "settings": {
+    "editor.tabSize": 2,
+    "editor.formatOnSave": true,
+    "python.defaultInterpreterPath": "python",
+    "typescript.preferences.importModuleSpecifier": "relative",
+    "files.exclude": {
+      "**/node_modules": true,
+      "**/__pycache__": true,
+      "**/*.pyc": true
+    }
+  },
+  "extensions": {
+    "recommendations": [
+      "ms-python.python",
+      "esbenp.prettier-vscode",
+      "bradlc.vscode-tailwindcss",
+      "ms-vscode.vscode-typescript-next"
+    ]
+  }
+}
