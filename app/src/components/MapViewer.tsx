@@ -107,7 +107,7 @@ export const MapViewer: React.FC<MapViewerProps> = ({
         `;
 
         circle.bindPopup(popupContent);
-        markersGroup.current.addLayer(circle);
+        if (markersGroup.current) markersGroup.current.addLayer(circle);
       });
 
       // Expose globally for click handlers inside popups

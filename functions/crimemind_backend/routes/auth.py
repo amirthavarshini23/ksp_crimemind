@@ -5,27 +5,36 @@ from datetime import datetime
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
+
 @router.post("/login", response_model=UserProfile)
 def login(req: LoginRequest):
+    # For demo validation, accept password "password123"
+    if req.password != "password123" and req.password != "admin":
+        raise HTTPException(status_code=401, detail="Invalid officer password")
+
     # Search for user by email
     for user in mock.MOCK_USERS:
-        if user["email"] == req.email:
+        if user["email"].lower() == req.email.lower():
+            # Override database/mock role with the user's selected role for dynamic testing
+            role_to_use = req.role if req.role else user["role"]
             return UserProfile(
                 rowid=user["rowid"],
                 email=user["email"],
                 username=user["username"],
-                role=user["role"],
+                role=role_to_use,
                 police_id=user["police_id"],
                 created_time=user["created_time"]
             )
     
-    # Simple default fallback login for demo if email doesn't match mock
+    # Custom fallback login for testing roles
+    role_to_use = req.role if req.role else "Investigator"
+    username = req.email.split("@")[0].replace(".", " ").title()
     return UserProfile(
-        rowid=4,
+        rowid=99,
         email=req.email,
-        username=req.email.split("@")[0].capitalize(),
-        role="Investigator",
-        police_id="KSP-2026-GEN-101",
+        username=username,
+        role=role_to_use,
+        police_id=f"KSP-2026-EXT-{req.role[:3].upper()}",
         created_time=datetime.now()
     )
 

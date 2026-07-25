@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, 
   Briefcase, 
-  UserCheck, 
   FolderSearch, 
   ListTodo, 
   MessageSquareCode, 
@@ -17,7 +16,7 @@ import {
 } from 'lucide-react';
 import { api } from '../services/api';
 import { GraphViewer } from '../components/GraphViewer';
-import { CaseFolderDetailResponse, OfficerNote, CaseTask } from '../types.ts';
+import { CaseFolderDetailResponse, CaseTask } from '../types.ts';
 
 export const CaseFolderDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();

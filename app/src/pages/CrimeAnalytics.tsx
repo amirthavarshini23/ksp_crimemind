@@ -100,7 +100,7 @@ export const CrimeAnalytics: React.FC = () => {
                   contentStyle={{ backgroundColor: '#1F2937', borderColor: '#374151', borderRadius: '8px', color: '#F3F4F6', fontSize: '11px' }} 
                 />
                 <Bar dataKey="value" name="Incidents" radius={[4, 4, 0, 0]}>
-                  {typeData.map((entry, index) => (
+                  {typeData.map((_entry, index) => (
                     <Cell key={`cell-${index}`} fill={BAR_COLORS[index % BAR_COLORS.length]} />
                   ))}
                 </Bar>

@@ -136,7 +136,7 @@ export const GraphViewer: React.FC<GraphViewerProps> = ({ elements, onSelectNode
             'text-background-opacity': 0.7,
             'text-background-color': '#0B132B',
             'text-background-padding': '2px',
-            'text-background-shape': 'round-rectangle'
+            'text-background-shape': 'roundrectangle'
           }
         },
         {

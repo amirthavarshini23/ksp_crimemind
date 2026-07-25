@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Briefcase, AlertTriangle, ChevronRight, FolderPlus } from 'lucide-react';
+import { Briefcase, ChevronRight, FolderPlus } from 'lucide-react';
 import { api } from '../services/api';
 import { CaseFolder } from '../types.ts';
 

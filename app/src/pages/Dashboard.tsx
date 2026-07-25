@@ -129,7 +129,7 @@ export const Dashboard: React.FC = () => {
             <span>Overlapping Entities Network</span>
           </div>
           <div className="flex-1 h-full">
-            <GraphViewer elements={miniGraphElements} onSelectNode={(node) => handleSelectCaseFromMap(1)} />
+            <GraphViewer elements={miniGraphElements} onSelectNode={(_node) => handleSelectCaseFromMap(1)} />
           </div>
         </div>
       </div>

@@ -4,7 +4,7 @@ import { UserProfile } from '../types.ts';
 interface AuthContextType {
   user: UserProfile | null;
   loading: boolean;
-  login: (email: string) => Promise<void>;
+  login: (email: string, password: string, role: string) => Promise<void>;
   logout: () => void;
   hasRole: (roles: string[]) => boolean;
 }
@@ -24,52 +24,45 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       } catch (e) {
         localStorage.removeItem('ksp_crimemind_user');
       }
-    } else {
-      // Seed default Investigator session for the hackathon
-      const defaultUser: UserProfile = {
-        rowid: 1,
-        email: "investigator.raj@ksp.gov.in",
-        username: "Inspector Rajkumar",
-        role: "Investigator",
-        police_id: "KSP-2015-BLR-884",
-        created_time: "2026-05-01 10:00:00"
-      };
-      setUser(defaultUser);
-      localStorage.setItem('ksp_crimemind_user', JSON.stringify(defaultUser));
     }
     setLoading(false);
   }, []);
 
-  const login = async (email: string) => {
+  const login = async (email: string, password: string, role: string) => {
     setLoading(true);
     try {
-      const backendUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      const backendUrl = localStorage.getItem('ksp_crimemind_backend_url') || import.meta.env.VITE_API_URL || 'http://localhost:8000';
       const response = await fetch(`${backendUrl}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password: 'password123' }),
+        body: JSON.stringify({ email, password, role }),
       });
       if (response.ok) {
         const data = await response.json();
         setUser(data);
         localStorage.setItem('ksp_crimemind_user', JSON.stringify(data));
       } else {
-        throw new Error('Login failed');
+        const err = await response.json();
+        throw new Error(err.detail || 'Login failed');
       }
-    } catch (e) {
+    } catch (e: any) {
       // Offline fallback login for client-only standalone mode
+      const username = email.split('@')[0].replace('.', ' ').replace('_', ' ').replace('-', ' ').toUpperCase();
       const offlineUser: UserProfile = {
         rowid: 1,
         email: email,
-        username: email.split('@')[0].toUpperCase(),
-        role: email.includes('admin') ? 'Administrator' : email.includes('supervisor') ? 'Supervisor' : email.includes('analyst') ? 'Analyst' : 'Investigator',
-        police_id: "KSP-2026-MOCK-999",
+        username: username,
+        role: role as any,
+        police_id: `KSP-2026-MOCK-${role.substring(0, 3).toUpperCase()}`,
         created_time: new Date().toISOString()
       };
       setUser(offlineUser);
       localStorage.setItem('ksp_crimemind_user', JSON.stringify(offlineUser));
+      if (e.message && e.message !== 'Failed to fetch') {
+        throw e;
+      }
     } finally {
       setLoading(false);
     }
@@ -82,7 +75,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const hasRole = (roles: string[]) => {
     if (!user) return false;
-    return roles.includes(user.role);
+    // Map alternate names to keep check flexible
+    const normalizedRole = user.role.replace(" ", "");
+    return roles.some(r => r.replace(" ", "").toLowerCase() === normalizedRole.toLowerCase());
   };
 
   return (

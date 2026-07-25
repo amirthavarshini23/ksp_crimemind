@@ -6,6 +6,7 @@ from datetime import datetime
 class LoginRequest(BaseModel):
     email: str
     password: str
+    role: str # Administrator, Supervisor, Investigator, Crime Analyst
 
 class UserProfile(BaseModel):
     rowid: int
@@ -13,6 +14,68 @@ class UserProfile(BaseModel):
     username: str
     role: str # Administrator, Supervisor, Investigator, Analyst
     police_id: str
+    created_time: datetime
+
+# Collaboration & Workspace Schemas
+class WorkspaceMessageCreate(BaseModel):
+    message_text: str
+    shared_chat_id: Optional[str] = None
+
+class WorkspaceMessageResponse(BaseModel):
+    rowid: int
+    case_folder_id: int
+    sender_id: int
+    sender_name: str
+    sender_role: str
+    message_text: str
+    has_attachment: bool
+    shared_chat_id: Optional[str] = None
+    created_time: datetime
+
+class WorkspaceAttachmentResponse(BaseModel):
+    rowid: int
+    message_id: int
+    file_name: str
+    file_type: str
+    file_store_id: str
+    created_time: datetime
+
+class WorkspaceTaskCreate(BaseModel):
+    task_title: str
+    description: str
+    assigned_officer_id: Optional[int] = None
+    priority: str # High, Medium, Low
+    due_date: str # ISO string
+
+class WorkspaceTaskResponse(BaseModel):
+    rowid: int
+    case_folder_id: int
+    task_title: str
+    description: str
+    assigned_officer_id: Optional[int] = None
+    assigned_officer_name: Optional[str] = None
+    priority: str
+    status: str # Pending, In Progress, Completed
+    due_date: datetime
+    created_time: datetime
+
+class TeamMemberResponse(BaseModel):
+    user_id: int
+    name: str
+    role: str
+    police_id: str
+    status: str # Online, Offline
+
+class NotificationResponse(BaseModel):
+    rowid: int
+    recipient_id: int
+    sender_id: Optional[int] = None
+    sender_name: Optional[str] = None
+    case_folder_id: Optional[int] = None
+    case_title: Optional[str] = None
+    message: str
+    type: str
+    is_read: bool
     created_time: datetime
 
 # Chat & Copilot Schemas

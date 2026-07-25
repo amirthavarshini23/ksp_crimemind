@@ -254,3 +254,50 @@ export interface ChatMessage {
   recommendations?: string[];
   relatedCases?: RelatedCaseMatch[];
 }
+
+export interface WorkspaceMessage {
+  rowid: number;
+  case_folder_id: number;
+  sender_id: number;
+  sender_name: string;
+  sender_role: string;
+  message_text: string;
+  has_attachment: boolean;
+  shared_chat_id?: string;
+  created_time: string;
+}
+
+export interface WorkspaceTask {
+  rowid: number;
+  case_folder_id: number;
+  task_title: string;
+  description: string;
+  assigned_officer_id?: number;
+  assigned_officer_name?: string;
+  priority: 'High' | 'Medium' | 'Low';
+  status: 'Pending' | 'In Progress' | 'Completed';
+  due_date: string;
+  created_time: string;
+}
+
+export interface TeamMember {
+  user_id: number;
+  name: string;
+  role: string;
+  police_id: string;
+  status: 'Online' | 'Offline';
+}
+
+export interface WorkspaceNotification {
+  rowid: number;
+  recipient_id: number;
+  sender_id?: number;
+  sender_name?: string;
+  case_folder_id?: number;
+  case_title?: string;
+  message: string;
+  type: string;
+  is_read: boolean;
+  created_time: string;
+}
+

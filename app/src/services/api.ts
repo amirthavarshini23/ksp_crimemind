@@ -4,14 +4,18 @@ import {
   ChatQueryResponse, 
   AnalyticsSummaryResponse, 
   IntelligenceCenterResponse,
-  OfficerNote
+  OfficerNote,
+  WorkspaceMessage,
+  WorkspaceTask,
+  TeamMember,
+  WorkspaceNotification
 } from '../types.ts';
-
 const getBackendUrl = () => {
   return localStorage.getItem('ksp_crimemind_backend_url') || import.meta.env.VITE_API_URL || 'http://localhost:8000';
 };
 
 const getHeaders = () => {
+
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
   };
@@ -19,10 +23,285 @@ const getHeaders = () => {
   if (key) {
     headers['X-Gemini-Key'] = key;
   }
+  const savedUser = localStorage.getItem('ksp_crimemind_user');
+  if (savedUser) {
+    try {
+      const u = JSON.parse(savedUser);
+      headers['X-User-Id'] = String(u.rowid);
+    } catch (e) {}
+  }
   return headers;
 };
 
 export const api = {
+  // Workspace Messages
+  async getWorkspaceMessages(caseId: number): Promise<WorkspaceMessage[]> {
+    try {
+      const res = await fetch(`${getBackendUrl()}/api/workspace/${caseId}/messages`, { headers: getHeaders() });
+      if (!res.ok) throw new Error('Error');
+      return await res.json();
+    } catch (e) {
+      // Offline fallback
+      return [
+        {
+          rowid: 1,
+          case_folder_id: caseId,
+          sender_id: 1,
+          sender_name: "Inspector Rajkumar",
+          sender_role: "Investigator",
+          message_text: "I have reviewed the CCTV footage from Devaraja Mohalla. The getaway motorcycle is definitely a black Pulsar 150. Let's dispatch a team to trace the registered owner.",
+          has_attachment: false,
+          created_time: new Date(Date.now() - 3600000 * 5).toISOString()
+        },
+        {
+          rowid: 2,
+          case_folder_id: caseId,
+          sender_id: 3,
+          sender_name: "Swati Deshpande",
+          sender_role: "Crime Analyst",
+          message_text: "Completed the tower dump analysis. Suspect Basavaraj's phone +91 9774012569 was active near the jewellery shop during the robbery timeframe.",
+          has_attachment: false,
+          created_time: new Date(Date.now() - 3600000 * 3).toISOString()
+        },
+        {
+          rowid: 3,
+          case_folder_id: caseId,
+          sender_id: 2,
+          sender_name: "ACP Patil",
+          sender_role: "Supervisor",
+          message_text: "@Inspector Rajkumar, please prioritize the coordinate search on the outer ring road toll gates. We need that Pulsar tracked down immediately.",
+          has_attachment: false,
+          created_time: new Date(Date.now() - 3600000 * 2).toISOString()
+        }
+      ];
+    }
+  },
+
+  async postWorkspaceMessage(caseId: number, text: string, sharedChatId?: string): Promise<WorkspaceMessage> {
+    try {
+      const res = await fetch(`${getBackendUrl()}/api/workspace/${caseId}/messages`, {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify({ message_text: text, shared_chat_id: sharedChatId })
+      });
+      if (!res.ok) throw new Error('Error');
+      return await res.json();
+    } catch (e) {
+      const savedUser = localStorage.getItem('ksp_crimemind_user');
+      const u = savedUser ? JSON.parse(savedUser) : { rowid: 1, username: "Inspector Rajkumar", role: "Investigator" };
+      return {
+        rowid: Math.floor(Math.random() * 1000) + 10,
+        case_folder_id: caseId,
+        sender_id: u.rowid,
+        sender_name: u.username,
+        sender_role: u.role,
+        message_text: text,
+        has_attachment: false,
+        shared_chat_id: sharedChatId,
+        created_time: new Date().toISOString()
+      };
+    }
+  },
+
+  // Workspace Tasks
+  async getWorkspaceTasks(caseId: number): Promise<WorkspaceTask[]> {
+    try {
+      const res = await fetch(`${getBackendUrl()}/api/workspace/${caseId}/tasks`, { headers: getHeaders() });
+      if (!res.ok) throw new Error('Error');
+      return await res.json();
+    } catch (e) {
+      return [
+        {
+          rowid: 1,
+          case_folder_id: caseId,
+          task_title: "Trace Bajaj Pulsar KA-11-H-8092",
+          description: "Crosscheck license plates with highway toll ANPR database to determine escape coordinates.",
+          assigned_officer_id: 1,
+          assigned_officer_name: "Inspector Rajkumar",
+          priority: "High",
+          status: "In Progress",
+          due_date: new Date(Date.now() + 3600000 * 48).toISOString(),
+          created_time: new Date(Date.now() - 3600000 * 24).toISOString()
+        },
+        {
+          rowid: 2,
+          case_folder_id: caseId,
+          task_title: "Obtain search warrants for bannimantap house",
+          description: "Draft petition for magistrate to search the bannimantap residence associated with Mohammad Rizwan.",
+          assigned_officer_id: 2,
+          assigned_officer_name: "ACP Patil",
+          priority: "Medium",
+          status: "Pending",
+          due_date: new Date(Date.now() + 3600000 * 120).toISOString(),
+          created_time: new Date(Date.now() - 3600000 * 24).toISOString()
+        },
+        {
+          rowid: 3,
+          case_folder_id: caseId,
+          task_title: "Conduct forensic finger-printing",
+          description: "Seize broken glass counters from jewellery shop and dispatch to FSL Bengaluru.",
+          assigned_officer_id: 1,
+          assigned_officer_name: "Inspector Rajkumar",
+          priority: "Low",
+          status: "Completed",
+          due_date: new Date(Date.now() - 3600000 * 24).toISOString(),
+          created_time: new Date(Date.now() - 3600000 * 72).toISOString()
+        }
+      ];
+    }
+  },
+
+  async addWorkspaceTask(caseId: number, task: { task_title: string; description: string; assigned_officer_id?: number; priority: string; due_date: string }): Promise<WorkspaceTask> {
+    try {
+      const res = await fetch(`${getBackendUrl()}/api/workspace/${caseId}/tasks`, {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify(task)
+      });
+      if (!res.ok) throw new Error('Error');
+      return await res.json();
+    } catch (e) {
+      let assignedName = undefined;
+      if (task.assigned_officer_id) {
+        if (task.assigned_officer_id === 1) assignedName = "Inspector Rajkumar";
+        else if (task.assigned_officer_id === 2) assignedName = "ACP Patil";
+        else if (task.assigned_officer_id === 3) assignedName = "Swati Deshpande";
+      }
+      return {
+        rowid: Math.floor(Math.random() * 1000) + 10,
+        case_folder_id: caseId,
+        task_title: task.task_title,
+        description: task.description,
+        assigned_officer_id: task.assigned_officer_id,
+        assigned_officer_name: assignedName,
+        priority: task.priority as any,
+        status: "Pending",
+        due_date: task.due_date,
+        created_time: new Date().toISOString()
+      };
+    }
+  },
+
+  async updateWorkspaceTask(caseId: number, taskId: number, status: string, priority?: string): Promise<WorkspaceTask> {
+    try {
+      const res = await fetch(`${getBackendUrl()}/api/workspace/${caseId}/tasks/${taskId}`, {
+        method: 'PUT',
+        headers: getHeaders(),
+        body: JSON.stringify({ status, priority })
+      });
+      if (!res.ok) throw new Error('Error');
+      return await res.json();
+    } catch (e) {
+      return {
+        rowid: taskId,
+        case_folder_id: caseId,
+        task_title: "Updated Task",
+        description: "Task details updated offline.",
+        priority: (priority || "High") as any,
+        status: status as any,
+        due_date: new Date().toISOString(),
+        created_time: new Date().toISOString()
+      };
+    }
+  },
+
+  // Workspace Members
+  async getWorkspaceMembers(caseId: number): Promise<TeamMember[]> {
+    try {
+      const res = await fetch(`${getBackendUrl()}/api/workspace/${caseId}/members`, { headers: getHeaders() });
+      if (!res.ok) throw new Error('Error');
+      return await res.json();
+    } catch (e) {
+      return [
+        { user_id: 1, name: "Inspector Rajkumar", role: "Investigator", police_id: "KSP-2015-BLR-884", status: "Online" },
+        { user_id: 2, name: "ACP Patil", role: "Supervisor", police_id: "KSP-2008-MYS-012", status: "Offline" },
+        { user_id: 3, name: "Swati Deshpande", role: "Crime Analyst", police_id: "KSP-2021-ANA-553", status: "Online" }
+      ];
+    }
+  },
+
+  async recordPresence(caseId: number): Promise<void> {
+    try {
+      await fetch(`${getBackendUrl()}/api/workspace/${caseId}/presence`, {
+        method: 'POST',
+        headers: getHeaders()
+      });
+    } catch (e) {}
+  },
+
+  // Workspace Activity Feed
+  async getWorkspaceFeed(caseId: number): Promise<any[]> {
+    try {
+      const res = await fetch(`${getBackendUrl()}/api/workspace/${caseId}/feed`, { headers: getHeaders() });
+      if (!res.ok) throw new Error('Error');
+      return await res.json();
+    } catch (e) {
+      return [
+        { rowid: 1, case_folder_id: caseId, user_name: "ACP Patil", activity_type: "CASE_ASSIGNED", description: "Case folder assigned to Inspector Rajkumar.", created_time: new Date(Date.now() - 3600000 * 24 * 4).toISOString() },
+        { rowid: 2, case_folder_id: caseId, user_name: "Inspector Rajkumar", activity_type: "EVIDENCE_UPLOAD", description: "Uploaded 'cctv_pulsar_capture.jpg'.", created_time: new Date(Date.now() - 3600000 * 5).toISOString() },
+        { rowid: 3, case_folder_id: caseId, user_name: "Swati Deshpande", activity_type: "NOTE_ADDED", description: "Added cell tower logs summary.", created_time: new Date(Date.now() - 3600000 * 3).toISOString() }
+      ];
+    }
+  },
+
+  // Attachments Uploader
+  async uploadWorkspaceAttachment(caseId: number, file: File): Promise<any> {
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const res = await fetch(`${getBackendUrl()}/api/workspace/${caseId}/upload`, {
+        method: 'POST',
+        headers: {
+          'X-Gemini-Key': localStorage.getItem('ksp_gemini_api_key') || '',
+          'X-User-Id': String(JSON.parse(localStorage.getItem('ksp_crimemind_user') || '{}').rowid || 1)
+        },
+        body: formData
+      });
+      if (!res.ok) throw new Error('Error');
+      return await res.json();
+    } catch (e) {
+      return {
+        status: "success",
+        file_name: file.name,
+        file_type: file.type,
+        message_id: Math.floor(Math.random() * 100)
+      };
+    }
+  },
+
+  // Notifications
+  async getNotifications(): Promise<WorkspaceNotification[]> {
+    try {
+      const res = await fetch(`${getBackendUrl()}/api/notifications`, { headers: getHeaders() });
+      if (!res.ok) throw new Error('Error');
+      return await res.json();
+    } catch (e) {
+      return [
+        {
+          rowid: 1,
+          recipient_id: 1,
+          sender_id: 2,
+          sender_name: "ACP Patil",
+          case_folder_id: 1,
+          case_title: "Mysuru Gold Robbery Pulsar Gang",
+          message: "ACP Patil mentioned you in case team discussion: '@Inspector Rajkumar, please prioritize the coordinate search...'",
+          type: "MENTION",
+          is_read: false,
+          created_time: new Date(Date.now() - 3600000 * 2).toISOString()
+        }
+      ];
+    }
+  },
+
+  async markNotificationRead(notificationId: number): Promise<void> {
+    try {
+      await fetch(`${getBackendUrl()}/api/notifications/${notificationId}/read`, {
+        method: 'POST',
+        headers: getHeaders()
+      });
+    } catch (e) {}
+  },
+
   async chatQuery(query: string, sessionId: string | null, language: string): Promise<ChatQueryResponse> {
     try {
       const res = await fetch(`${getBackendUrl()}/api/chat/query`, {

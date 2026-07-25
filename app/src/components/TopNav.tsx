@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Bell, Wifi, WifiOff, FileText, ExternalLink } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+import { Search, Wifi, WifiOff, FileText, ExternalLink } from 'lucide-react';
+
+import { NotificationBell } from './NotificationBell';
 
 export const TopNav: React.FC = () => {
-  const { user } = useAuth();
+
   const [online, setOnline] = useState<boolean>(true);
 
   useEffect(() => {
@@ -66,10 +67,7 @@ export const TopNav: React.FC = () => {
         </a>
 
         {/* Notifications */}
-        <button className="relative p-1.5 rounded-lg border border-slate-800 hover:bg-slate-850 transition text-slate-400 hover:text-white">
-          <Bell className="h-4 w-4" />
-          <span className="absolute top-1 right-1 h-1.5 w-1.5 bg-red-500 rounded-full pulse-signal"></span>
-        </button>
+        <NotificationBell />
       </div>
     </header>
   );
