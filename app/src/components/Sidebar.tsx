@@ -8,11 +8,12 @@ import {
   BarChart3, 
   AlertOctagon, 
   Settings as SettingsIcon,
-  ShieldCheck,
   Users,
   LogOut
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+
+import kspLogo from '../assets/ksp_logo.png';
 
 interface NavItem {
   to: string;
@@ -53,9 +54,7 @@ export const Sidebar: React.FC = () => {
       <div className="flex flex-col">
         {/* Header Logo */}
         <div className="p-6 border-b border-slate-800 flex items-center space-x-3">
-          <div className="bg-blue-600/20 p-2 rounded-lg border border-blue-500/30">
-            <ShieldCheck className="h-6 w-6 text-blue-500" />
-          </div>
+          <img src={kspLogo} alt="KSP Logo" className="h-9 w-9 rounded-lg object-contain bg-white/5 p-1 border border-slate-800" />
           <div>
             <h1 className="font-display font-bold text-lg leading-tight tracking-tight text-white">
               CrimeMind AI
@@ -94,7 +93,11 @@ export const Sidebar: React.FC = () => {
       {user && (
         <div className="p-4 border-t border-slate-800">
           <div className="bg-slate-900/50 rounded-xl border border-slate-800 p-3">
-            <div className="flex items-center space-x-3">
+            <div 
+              onClick={() => navigate('/profile')}
+              className="flex items-center space-x-3 cursor-pointer p-1.5 -m-1.5 rounded-lg hover:bg-slate-800/40 transition-all"
+              title="View Profile Dossier"
+            >
               <div className="h-9 w-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-blue-500">
                 {user.username.substring(0, 2).toUpperCase()}
               </div>

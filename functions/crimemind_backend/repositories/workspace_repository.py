@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 # In-memory store for messages, tasks, notifications, and activity logs
 # initialized with realistic seed data to support offline and development mode.
 WORKSPACE_MESSAGES = [
-    # Case 1 (Robbery)
+    # Case 1 (Mysuru Pulsar Robbery)
     {
         "rowid": 1,
         "case_folder_id": 1,
@@ -14,7 +14,7 @@ WORKSPACE_MESSAGES = [
         "sender_name": "Inspector Rajkumar",
         "sender_role": "Investigator",
         "message_text": "I have reviewed the CCTV footage from Devaraja Mohalla. The getaway motorcycle is definitely a black Pulsar 150. Let's dispatch a team to trace the registered owner.",
-        "has_attachment": False,
+        "has_attachment": True,
         "shared_chat_id": None,
         "created_time": datetime.now() - timedelta(hours=5)
     },
@@ -40,7 +40,7 @@ WORKSPACE_MESSAGES = [
         "shared_chat_id": None,
         "created_time": datetime.now() - timedelta(hours=2)
     },
-    # Case 2 (Cybercrime)
+    # Case 2 (Cybercrime Vishing Ring)
     {
         "rowid": 4,
         "case_folder_id": 2,
@@ -51,6 +51,41 @@ WORKSPACE_MESSAGES = [
         "has_attachment": False,
         "shared_chat_id": None,
         "created_time": datetime.now() - timedelta(hours=10)
+    },
+    {
+        "rowid": 5,
+        "case_folder_id": 2,
+        "sender_id": 3, # Swati Deshpande
+        "sender_name": "Swati Deshpande",
+        "sender_role": "Crime Analyst",
+        "message_text": "@ACP Patil, Karthik Gowda is linked to 3 separate FIRs in Bengaluru and Mangaluru. Cross-layer graph shows identical SBI account beneficiary pings.",
+        "has_attachment": False,
+        "shared_chat_id": "session_ai_cyber_041",
+        "created_time": datetime.now() - timedelta(hours=4)
+    },
+    # Case 3 (Karavali Coastal Smuggling)
+    {
+        "rowid": 6,
+        "case_folder_id": 3,
+        "sender_id": 5, # Inspector Praveen Shetty
+        "sender_name": "Inspector Praveen Shetty",
+        "sender_role": "Investigator",
+        "message_text": "Seized 15 kg MDMA at Kadri checkpost. White Creta KA-19-MC-8812 is registered to Suresh Poojary 'Don'. We have initiated an airport LOC.",
+        "has_attachment": True,
+        "shared_chat_id": None,
+        "created_time": datetime.now() - timedelta(hours=12)
+    },
+    # Case 4 (Deccan Land Mafia)
+    {
+        "rowid": 7,
+        "case_folder_id": 4,
+        "sender_id": 1, # Inspector Rajkumar
+        "sender_name": "Inspector Rajkumar",
+        "sender_role": "Investigator",
+        "message_text": "Somesh Patil arrested near Keshwapur Circle. We recovered 2 un-licensed country pistols from his vehicle.",
+        "has_attachment": False,
+        "shared_chat_id": None,
+        "created_time": datetime.now() - timedelta(hours=6)
     }
 ]
 
@@ -62,6 +97,14 @@ WORKSPACE_ATTACHMENTS = [
         "file_type": "image/jpeg",
         "file_store_id": "cctv_frame_robbery",
         "created_time": datetime.now() - timedelta(hours=5)
+    },
+    {
+        "rowid": 2,
+        "message_id": 6,
+        "file_name": "fsl_mdma_seizure_report.pdf",
+        "file_type": "application/pdf",
+        "file_store_id": "fsl_report_mdma",
+        "created_time": datetime.now() - timedelta(hours=12)
     }
 ]
 
@@ -82,8 +125,8 @@ WORKSPACE_TASKS = [
     {
         "rowid": 2,
         "case_folder_id": 1,
-        "task_title": "Obtain search warrants for bannimantap house",
-        "description": "Draft petition for magistrate to search the bannimantap residence associated with Mohammad Rizwan.",
+        "task_title": "Obtain search warrants for Bannimantap residence",
+        "description": "Draft petition for magistrate to search the residence associated with Mohammad Rizwan.",
         "assigned_officer_id": 2,
         "assigned_officer_name": "ACP Patil",
         "priority": "Medium",
@@ -112,8 +155,34 @@ WORKSPACE_TASKS = [
         "assigned_officer_id": 3,
         "assigned_officer_name": "Swati Deshpande",
         "priority": "High",
+        "status": "In Progress",
+        "due_date": datetime.now() + timedelta(days=1),
+        "created_time": datetime.now() - timedelta(days=2)
+    },
+    # Case 3
+    {
+        "rowid": 5,
+        "case_folder_id": 3,
+        "task_title": "Issue Look-Out Circular (LOC) for Suresh Poojary 'Don'",
+        "description": "Alert international airports in Mangaluru, Bengaluru, and Goa to prevent suspect escape.",
+        "assigned_officer_id": 5,
+        "assigned_officer_name": "Inspector Praveen Shetty",
+        "priority": "High",
         "status": "Pending",
         "due_date": datetime.now() + timedelta(days=1),
+        "created_time": datetime.now() - timedelta(days=1)
+    },
+    # Case 4
+    {
+        "rowid": 6,
+        "case_folder_id": 4,
+        "task_title": "File KCOCA charge sheet against Somesh Patil Gang",
+        "description": "Compile history sheets and previous extortion FIRs for special court presentation.",
+        "assigned_officer_id": 1,
+        "assigned_officer_name": "Inspector Rajkumar",
+        "priority": "High",
+        "status": "In Progress",
+        "due_date": datetime.now() + timedelta(days=4),
         "created_time": datetime.now() - timedelta(days=2)
     }
 ]
@@ -145,6 +214,15 @@ WORKSPACE_ACTIVITY_LOGS = [
         "activity_type": "NOTE_ADDED",
         "description": "Tower log coordinates added to Case Folder.",
         "created_time": datetime.now() - timedelta(hours=3)
+    },
+    {
+        "rowid": 4,
+        "case_folder_id": 3,
+        "user_id": 5,
+        "user_name": "Inspector Praveen Shetty",
+        "activity_type": "EVIDENCE_UPLOAD",
+        "description": "FSL report for 15kg MDMA seizure added.",
+        "created_time": datetime.now() - timedelta(hours=12)
     }
 ]
 
@@ -155,11 +233,23 @@ NOTIFICATIONS = [
         "sender_id": 2, # Patil
         "sender_name": "ACP Patil",
         "case_folder_id": 1,
-        "case_title": "Mysuru Gold Robbery Pulsar Gang",
+        "case_title": "Mysuru Gold Robbery & Highway Pulsar Syndicate",
         "message": "ACP Patil mentioned you in case team discussion: '@Inspector Rajkumar, please prioritize the coordinate search...'",
         "type": "MENTION",
         "is_read": False,
         "created_time": datetime.now() - timedelta(hours=2)
+    },
+    {
+        "rowid": 2,
+        "recipient_id": 2, # ACP Patil
+        "sender_id": 3, # Swati
+        "sender_name": "Swati Deshpande",
+        "case_folder_id": 2,
+        "case_title": "RT Nagar Cybercrime & Banking Vishing Ring",
+        "message": "Swati Deshpande mentioned you: '@ACP Patil, Karthik Gowda is linked to 3 separate FIRs...'",
+        "type": "MENTION",
+        "is_read": False,
+        "created_time": datetime.now() - timedelta(hours=4)
     }
 ]
 

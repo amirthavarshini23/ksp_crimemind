@@ -6,9 +6,17 @@ export interface UserProfile {
   rowid: number;
   email: string;
   username: string;
-  role: 'Administrator' | 'Supervisor' | 'Investigator' | 'Analyst';
+  role: 'Administrator' | 'Supervisor' | 'Investigator' | 'Analyst' | 'Crime Analyst';
   police_id: string;
   created_time: string;
+  rank?: string;
+  designation?: string;
+  unit_station?: string;
+  district?: string;
+  kgid?: string;
+  phone_number?: string;
+  clearance_level?: string;
+  active_cases_count?: number;
 }
 
 export interface FIR {

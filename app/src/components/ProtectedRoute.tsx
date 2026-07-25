@@ -13,10 +13,10 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowe
 
   if (loading) {
     return (
-      <div className="flex h-screen w-screen items-center justify-center bg-slate-950 text-slate-400 select-none font-sans">
+      <div className="flex h-screen w-screen items-center justify-center bg-white text-slate-500 select-none font-sans">
         <div className="space-y-4 text-center">
           <div className="h-10 w-10 animate-spin rounded-full border-4 border-blue-500 border-t-transparent mx-auto"></div>
-          <p className="text-xs uppercase tracking-widest font-semibold text-blue-400">Verifying Credentials...</p>
+          <p className="text-xs uppercase tracking-widest font-semibold text-blue-600">Verifying Credentials...</p>
         </div>
       </div>
     );

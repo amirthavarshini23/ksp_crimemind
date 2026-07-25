@@ -371,8 +371,12 @@ export const api = {
       return await res.json();
     } catch (e) {
       return [
-        { rowid: 1, title: "Mysuru Gold Robbery Pulsar Gang", summary: "Investigation into the armed robbery at Devaraja jewellery shop and related chain snatching incidents utilizing a black Pulsar motorcycle.", status: "Active", risk_score: 85, created_time: "2026-05-21 10:00:00" },
-        { rowid: 2, title: "RT Nagar Phishing & Online Scams", summary: "Covers vishing fraud cases targeting elder citizens in Bengaluru City, where victims transfer funds to SBI accounts.", status: "Active", risk_score: 78, created_time: "2026-05-14 09:30:00" }
+        { rowid: 1, title: "Mysuru Gold Robbery & Highway Pulsar Syndicate", summary: "Investigation into armed robbery at Devaraja jewellery shop and related chain snatching incidents using black Pulsar motorcycles.", status: "Active", risk_score: 88, created_time: "2026-05-21 10:00:00" },
+        { rowid: 2, title: "RT Nagar Cybercrime & Banking Vishing Ring", summary: "Covers vishing fraud cases targeting elder citizens in Bengaluru City, where victims transfer funds to SBI accounts.", status: "Active", risk_score: 82, created_time: "2026-05-14 09:30:00" },
+        { rowid: 3, title: "Karavali Coastal Narcotics & Smuggling Syndicate", summary: "Multi-district investigation into MDMA and drug distribution across Mangaluru and Udupi coastal belt.", status: "Active", risk_score: 94, created_time: "2025-11-10 14:00:00" },
+        { rowid: 4, title: "Deccan Land Grabbing, Extortion & Riot Gang", summary: "Organized crime module in Hubballi-Dharwad and Belagavi involved in land encroachments and extortion.", status: "Active", risk_score: 79, created_time: "2026-06-03 11:15:00" },
+        { rowid: 5, title: "Bengaluru Commercial Crime & Crypto Fraud Module", summary: "Fake mobile trading app and crypto wallet scams operating out of Indiranagar.", status: "Active", risk_score: 75, created_time: "2026-07-06 09:00:00" },
+        { rowid: 6, title: "Belagavi-Kalaburagi Inter-District Extortion Network", summary: "Extortion module targeting builders using firearms and forged land titles.", status: "Solved", risk_score: 65, created_time: "2024-04-20 16:00:00" }
       ];
     }
   },
@@ -386,10 +390,10 @@ export const api = {
       // Return a complete mock case folder detail for offline validation
       return {
         rowid: id,
-        title: id === 1 ? "Mysuru Gold Robbery Pulsar Gang" : "RT Nagar Phishing & Online Scams",
+        title: id === 1 ? "Mysuru Gold Robbery & Highway Pulsar Syndicate" : id === 2 ? "RT Nagar Cybercrime & Banking Vishing Ring" : "Karavali Coastal Narcotics Syndicate",
         summary: id === 1 ? "Robbery and snatching patterns in Mysuru/Malleswaram linked by MO and suspect cell numbers." : "Vishing calls impersonating bank managers transferring money to a centralized SBI account.",
         status: "Active",
-        risk_score: id === 1 ? 85 : 78,
+        risk_score: id === 1 ? 88 : id === 2 ? 82 : 94,
         created_time: id === 1 ? "2026-05-21 10:00:00" : "2026-05-14 09:30:00",
         timeline: [
           { id: "e1", date: "2026-05-20", title: "Armed Robbery registered", description: "Loot at Devaraja Jewellery store, gold worth 18L stolen.", type: "FIR" },
@@ -413,16 +417,20 @@ export const api = {
           { rowid: 3, fir_id: 2, name: "CCTV Footage Devaraja shop", type: "Digital", description: "Showing tattoo details.", file_store_id: "cctv.mp4", date_found: "2026-05-20" }
         ],
         related_cases: [
-          { fir_id: 4, fir_number: "FIR/2026/BLR/MTH/089", title: "Chain Snatching Malleswaram", similarity: 0.76, matching_mo: "Escaping on black sporty motorcycle" }
+          { fir_id: 4, fir_number: "FIR/2026/BLR/MTH/089", title: "Chain Snatching Malleswaram", similarity: 0.86, matching_mo: "Escaping on black sporty motorcycle" }
         ],
         graph: {
           nodes: [
-            { data: { id: "cf_1", label: "Gold Robbery Gang", type: "Folder" } },
+            { data: { id: "cf_1", label: "Pulsar Syndicate", type: "Folder" } },
             { data: { id: "fir_2", label: "FIR 102/2026", type: "FIR" } },
-            { data: { id: "acc_basya", label: "Basavaraj", type: "Accused" } }
+            { data: { id: "acc_basya", label: "Basavaraj 'Basya'", type: "Accused" } },
+            { data: { id: "ph_977", label: "+91 9774012569", type: "Phone" } },
+            { data: { id: "v_pulsar", label: "KA-11-H-8092", type: "Vehicle" } }
           ],
           edges: [
-            { data: { id: "e1", source: "acc_basya", target: "fir_2", label: "Appeared In" } }
+            { data: { id: "e1", source: "acc_basya", target: "fir_2", label: "Appeared In" } },
+            { data: { id: "e2", source: "acc_basya", target: "ph_977", label: "Uses" } },
+            { data: { id: "e3", source: "acc_basya", target: "v_pulsar", label: "Owns" } }
           ]
         },
         notes: [
@@ -478,23 +486,28 @@ export const api = {
       return await res.json();
     } catch (e) {
       return {
-        total_firs: 6,
-        pending_firs: 1,
-        solved_firs: 1,
-        repeat_offenders_count: 2,
-        district_distribution: { "Bengaluru City": 3, "Mysuru City": 2, "Hubballi-Dharwad": 1 },
-        crime_type_distribution: { "Cybercrime": 2, "Robbery": 3, "Assault": 1 },
+        total_firs: 12,
+        pending_firs: 2,
+        solved_firs: 3,
+        repeat_offenders_count: 5,
+        district_distribution: { "Bengaluru City": 4, "Mysuru City": 3, "Hubballi-Dharwad": 1, "Mangaluru City": 2, "Belagavi": 1, "Udupi": 1 },
+        crime_type_distribution: { "Cybercrime": 3, "Robbery": 4, "Assault": 1, "Theft": 2, "Narcotics": 1, "Extortion": 1 },
         monthly_trends: [
           { month: "Jan", crimes: 12, solved: 8 },
           { month: "Feb", crimes: 19, solved: 11 },
           { month: "Mar", crimes: 15, solved: 10 },
           { month: "Apr", crimes: 22, solved: 14 },
-          { month: "May", crimes: 6, solved: 1 }
+          { month: "May", crimes: 12, solved: 3 }
         ],
         hotspots: [
           { fir_id: 1, fir_number: "FIR/2026/BLR/CYB/041", district: "Bengaluru City", crime_type: "Cybercrime", station: "Cyber Crime PS", lat: 12.9716, lng: 77.5946, severity: 75 },
           { fir_id: 2, fir_number: "FIR/2026/MYS/DEB/102", district: "Mysuru City", crime_type: "Robbery", station: "Devaraja PS", lat: 12.3086, lng: 76.6548, severity: 85 },
-          { fir_id: 3, fir_number: "FIR/2026/HUB/KESH/154", district: "Hubballi-Dharwad", crime_type: "Assault", station: "Keshwapur PS", lat: 15.3647, lng: 75.1242, severity: 60 }
+          { fir_id: 3, fir_number: "FIR/2026/HUB/KESH/154", district: "Hubballi-Dharwad", crime_type: "Assault", station: "Keshwapur PS", lat: 15.3647, lng: 75.1242, severity: 60 },
+          { fir_id: 4, fir_number: "FIR/2026/BLR/MTH/089", district: "Bengaluru City", crime_type: "Robbery", station: "Malleswaram PS", lat: 12.9961, lng: 77.5714, severity: 50 },
+          { fir_id: 5, fir_number: "FIR/2026/MYS/VVN/077", district: "Mysuru City", crime_type: "Theft", station: "V V Puram PS", lat: 12.3283, lng: 76.6341, severity: 68 },
+          { fir_id: 6, fir_number: "FIR/2026/BLR/CYB/059", district: "Bengaluru City", crime_type: "Cybercrime", station: "Cyber Crime PS", lat: 12.9784, lng: 77.6408, severity: 80 },
+          { fir_id: 8, fir_number: "FIR/2025/MNG/KAD/204", district: "Mangaluru City", crime_type: "Narcotics", station: "Kadri PS", lat: 12.8702, lng: 74.8427, severity: 92 },
+          { fir_id: 9, fir_number: "FIR/2024/BEL/SHA/130", district: "Belagavi", crime_type: "Extortion", station: "Shahapur PS", lat: 15.8497, lng: 74.4977, severity: 88 }
         ]
       };
     }
@@ -509,30 +522,38 @@ export const api = {
       return {
         today_alerts: [
           { time: "08:15 AM", alert: "Spike in vishing scam calls targeting RT Nagar seniors. SBI account blocks initiated.", severity: "Medium" },
-          { time: "09:30 AM", alert: "Black Pulsar motorcycle reported near Mandya. Border checkpoints alerted.", severity: "High" }
+          { time: "09:30 AM", alert: "Black Pulsar motorcycle reported near Mandya. Border checkpoints alerted.", severity: "High" },
+          { time: "11:00 AM", alert: "Seizure of commercial MDMA at Kadri checkpost. Airport Look-Out Circular active.", severity: "High" }
         ],
         emerging_patterns: [
-          { pattern_name: "OTP / Bank Impersonation Ring", crimes_count: 2, district: "Bengaluru City", mo_description: "Suspect calls pretending to be SBI officials updating KYC, targets citizens, immediately transfers to online wallets." },
-          { pattern_name: "Two-Wheeler Grab & Run Group", crimes_count: 2, district: "Mysuru / Malleswaram", mo_description: "Uses black Pulsar bikes without license plates, snatches chains/valuables in afternoon hours, escapes via highways." }
+          { pattern_name: "OTP / Bank Impersonation Ring", crimes_count: 3, district: "Bengaluru City", mo_description: "Suspect calls pretending to be SBI officials updating KYC, targets citizens, immediately transfers to online wallets." },
+          { pattern_name: "Two-Wheeler Grab & Run Group", crimes_count: 4, district: "Mysuru / Malleswaram", mo_description: "Uses black Pulsar bikes without license plates, snatches chains/valuables in afternoon hours, escapes via highways." },
+          { pattern_name: "Karavali Coastal Drug Smuggling", crimes_count: 2, district: "Mangaluru / Udupi", mo_description: "Inter-state drug trafficking hidden in modified vehicle door panels." }
         ],
         repeat_offenders: [
-          { name: "Karthik Gowda", cases_linked: 2, last_status: "Suspect", mo_style: "Vishing / Phishing Call" }
+          { name: "Karthik Gowda", cases_linked: 3, last_status: "Suspect", mo_style: "Vishing / Phishing Call" },
+          { name: "Basavaraj 'Basya'", cases_linked: 4, last_status: "Absconding", mo_style: "Armed Robbery / Snatching" },
+          { name: "Suresh Poojary 'Don'", cases_linked: 2, last_status: "Absconding", mo_style: "Narcotics / Extortion" }
         ],
         high_risk_districts: [
-          { district: "Bengaluru City", risk_level: "High", cases_count: 3, incident_rate: "+12%" },
-          { district: "Mysuru City", risk_level: "Medium", cases_count: 2, incident_rate: "+4%" }
+          { district: "Bengaluru City", risk_level: "High", cases_count: 4, incident_rate: "+14%" },
+          { district: "Mangaluru City", risk_level: "High", cases_count: 2, incident_rate: "+18%" },
+          { district: "Mysuru City", risk_level: "Medium", cases_count: 3, incident_rate: "+6%" }
         ],
         organized_crime_alerts: [
-          { gang_name: "Pulsar Snatchers", active_zone: "Bengaluru / Mysuru highway", risk_score: 88, status: "Under surveillance" }
+          { gang_name: "Pulsar Snatchers Syndicate", active_zone: "Bengaluru / Mysuru highway", risk_score: 88, status: "Under surveillance" },
+          { gang_name: "Karavali Smuggling Syndicate", active_zone: "Mangaluru / Udupi coastline", risk_score: 94, status: "LOC Issued" }
         ],
         recommendations: [
           "AI-generated investigative suggestion: Deploy police patrols in Malleswaram and V V Puram residential streets between 1:00 PM and 4:00 PM to counter active snatching hours.",
           "AI-generated investigative suggestion: Broadcast regional warnings to senior citizens in RT Nagar regarding KYC expiration calls.",
-          "AI-generated investigative suggestion: Synchronize ANPR logs at Mandya toll gates to identify black Pulsar plate KA-11-H-8092 crossing registers."
+          "AI-generated investigative suggestion: Synchronize ANPR logs at Mandya toll gates to identify black Pulsar plate KA-11-H-8092 crossing registers.",
+          "AI-generated investigative suggestion: Freeze beneficiary account SBI-3304128490 and subpoena IP logs from Internet Service Providers."
         ],
         recent_updates: [
           { timestamp: "2 mins ago", title: "Suspect Somesh Patil Arrested", details: "Arrested by Keshwapur PS in connection with assault case." },
-          { timestamp: "1 hr ago", title: "Bank Account Frozen", details: "SBI-3304128490 frozen by Cyber Crime PS order." }
+          { timestamp: "1 hr ago", title: "Bank Account Frozen", details: "SBI-3304128490 frozen by Cyber Crime PS order." },
+          { timestamp: "3 hrs ago", title: "MDMA Contraband Seized", details: "15kg MDMA seized at Kadri Checkpost by Mangaluru Police." }
         ]
       };
     }

@@ -16,6 +16,7 @@ import { IntelligenceCenter } from './pages/IntelligenceCenter';
 import { Settings } from './pages/Settings';
 import { Login } from './pages/Login';
 import { InvestigationCollaboration } from './pages/InvestigationCollaboration';
+import { UserProfilePage } from './pages/UserProfilePage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -52,6 +53,7 @@ function AppLayout() {
             <Route path="/graph" element={<KnowledgeGraph />} />
             <Route path="/analytics" element={<CrimeAnalytics />} />
             <Route path="/intelligence" element={<IntelligenceCenter />} />
+            <Route path="/profile" element={<UserProfilePage />} />
             <Route path="/settings" element={
               <ProtectedRoute allowedRoles={['Administrator']}>
                 <Settings />
@@ -74,7 +76,7 @@ function AppRouter() {
       <div className="flex h-screen w-screen items-center justify-center bg-slate-950 text-slate-400 select-none font-sans">
         <div className="space-y-4 text-center">
           <div className="h-10 w-10 animate-spin rounded-full border-4 border-blue-500 border-t-transparent mx-auto"></div>
-          <p className="text-xs uppercase tracking-widest font-semibold text-blue-400">Initializing CrimeMind AI...</p>
+          <p className="text-xs uppercase tracking-widest font-semibold text-blue-500">Initializing CrimeMind AI...</p>
         </div>
       </div>
     );
